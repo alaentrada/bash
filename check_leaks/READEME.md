@@ -2,9 +2,9 @@ When you are checking leaks in your program with Valgrind, it's pretty awkward l
 
 Usage:
 
--First of all give the file execution permissions with "chmod +x check_valgrind.sh"
+-First of all make sure you have permission to execute the script with "chmod +x check_valgrind.sh"
 
--Then, execute the script "./check_valgrind.sh "name_of_program" [OPTIONAL:name_of_header.ext]
+-Then, execute the script "./check_valgrind.sh "name_of_program" [OPTIONAL:name_of_header.ext]"
 If name of header is not specified, it will be assumed as "name_of_program.h".
 
 -The script will launch the program and store the standard error output in "val" file. Then it will extract the functions' names from the header and look for them inside "val" file, storing the leaks associated to those functions inside "myLeaks.log" file.
