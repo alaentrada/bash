@@ -1,4 +1,4 @@
-When you are checking leaks in your program with valgrind, it's pretty awkward looking for your own leaks among all the still reachable leaks from other libraries (like readline function's). This Bash script is designed to analyze a C program for memory leaks using Valgrind and extract function names from a specified header file. It checks for memory leaks in the compiled program and lists the functions from the header file that are associated with any detected leaks.
+When you are checking leaks in your program with Valgrind, it's pretty awkward looking for your own leaks among all the still reachable leaks from other libraries (like readline function's). This Bash script is designed to analyze a C program for memory leaks using Valgrind and extract function names from a specified header file. It checks for memory leaks in the compiled program and lists the functions from the header file that are associated with any detected leaks.
 
 Usage:
 
