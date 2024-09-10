@@ -1,0 +1,48 @@
+USAGE:
+  ./find_issues.sh [OPTIONS] <program_name> [header_file]
+
+DESCRIPTION:
+  This script automates the process of running Valgrind to detect memory leaks in a specified program.
+  It extracts function names from a header file and checks Valgrind's output for memory leaks that
+  are related to these functions. The results are saved in 'myLeaks.log'. The script also provides a 
+  cleanup option to remove temporary files created during its execution.
+
+OPTIONS:
+  --help          Displays this help information.
+  clean           Removes temporary files generated during the script's execution, including 'val', 
+                  'myLeaks.log', and 'funcs'.
+
+ARGUMENTS:
+  <program_name>  The name of the executable program to be analyzed for memory leaks. This is a required 
+                  argument unless using the 'clean' option.
+  [header_file]   Optional argument specifying the header file containing function declarations.
+                  Defaults to '<program_name>.h' if not provided.
+
+SCRIPT FLOW:
+  1. Runs Valgrind on the specified program with full leak checks and outputs the results to a file named 'val'.
+  2. Extracts function names from the provided header file and saves them in a file named 'funcs'.
+  3. Parses the Valgrind output to identify blocks of text related to memory leaks.
+  4. Checks if any identified memory leaks are associated with functions declared in the header file.
+  5. Logs relevant leak information to 'myLeaks.log'.
+
+EXAMPLES:
+  ./find_issues.sh my_program
+      Runs Valgrind on 'my_program' and checks for memory leaks associated with functions declared in 'my_program.h'.
+
+  ./find_issues.sh my_program my_header.h
+      Runs Valgrind on 'my_program' and checks for memory leaks associated with functions declared in 'my_header.h'.
+
+  ./find_issues.sh clean
+      Cleans up all temporary files generated during previous script runs.
+
+  ./find_issues.sh --help
+      Displays this help information.
+
+NOTES:
+  - Ensure that the program to be analyzed is compiled and executable.
+  - The script assumes that the header file contains function declarations formatted with typical C syntax.
+  - Temporary files like 'blocks.tmp', 'val.tmp', and 'funcs' are used for intermediate steps and will be 
+    removed upon script completion or when 'clean' is used.
+
+AUTHOR:
+  This script was created to simplify the process of using Valgrind for memory leak detection in C projects.
