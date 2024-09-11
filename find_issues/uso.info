@@ -1,0 +1,31 @@
+USO: ./find_issues.sh [OPCIÓNS] <nome_programa> [ficheiro_cabeceira]
+
+DESCRICIÓN: Este script automatiza o proceso de executar Valgrind para detectar fugas de memoria nun programa especificado. Extrae os nomes das funcións dun ficheiro de cabeceira e comproba a saída de Valgrind para detectar fugas de memoria que estean relacionadas con estas funcións. Os resultados gárdanse en 'myLeaks.log'. O script tamén proporciona unha opción de limpeza para eliminar os ficheiros temporais creados durante a súa execución.
+
+OPCIÓNS: --help Mostra esta información de axuda. clean Elimina os ficheiros temporais xerados durante a execución do script, incluíndo 'val', 'myLeaks.log' e 'funcs'.
+
+ARGUMENTOS: <nome_programa> O nome do programa executable que se analizará para detectar fugas de memoria. Este argumento é obrigatorio, agás se se utiliza a opción 'clean'. [ficheiro_cabeceira] Argumento opcional que especifica o ficheiro de cabeceira que contén as declaracións das funcións. Se non se proporciona, por defecto será '<nome_programa>.h'.
+
+FLUXO DO SCRIPT:
+
+1. Executa Valgrind no programa especificado con verificacións completas de fugas e garda os resultados nun ficheiro chamado 'val'.
+2. Extrae os nomes das funcións do ficheiro de cabeceira proporcionado e gárdaos nun ficheiro chamado 'funcs'.
+3. Analiza a saída de Valgrind para identificar bloques de texto relacionados con fugas de memoria.
+4. Comproba se algunha das fugas de memoria identificadas está asociada coas funcións declaradas no ficheiro de cabeceira.
+5. Rexistra a información relevante das fugas en 'myLeaks.log'.
+
+EXEMPLOS: ./find_issues.sh my_program Executa Valgrind en 'my_program' e comproba as fugas de memoria asociadas coas funcións declaradas en 'my_program.h'.
+
+./find_issues.sh my_program my_header.h Executa Valgrind en 'my_program' e comproba as fugas de memoria asociadas coas funcións declaradas en 'my_header.h'.
+
+./find_issues.sh clean Limpa todos os ficheiros temporais xerados durante execucións previas do script.
+
+./find_issues.sh --help Mostra esta información de axuda.
+
+NOTAS:
+
+    Asegúrate de que o programa que se vai analizar está compilado e é executable.
+    O script asume que o ficheiro de cabeceira contén declaracións de funcións formateadas coa sintaxe típica de C.
+    Utilízanse ficheiros temporais como 'blocks.tmp', 'val.tmp' e 'funcs' para pasos intermedios, e eliminaranse ao completar o script ou cando se use 'clean'.
+
+AUTOR: Este script foi creado para simplificar o proceso de uso de Valgrind para a detección de fugas de memoria en proxectos en C.

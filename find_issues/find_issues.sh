@@ -11,17 +11,29 @@ showProgress() {
     printf "\r[%-${bar_length}s]" "${bar:0:filled_length}"| tr ' ' '.' && printf " %d%%" "$progress"
 }
 
+cleanTemps() {
+    rm -f blocks.tmp val.tmp word.tmp
+}
+
+clean() {
+    rm -f val myLeaks.log funcs val
+    cleanTemps
+}
+
 # Check if no arguments are provided
 if [ "$#" -eq 0 ]; then
     exit
 elif [ "$#" -eq 1 ] && [ "$1" == 'clean' ]; then
     # Clean up specified files
-    rm -f val myLeaks.log funcs val
+    clean
     exit
 fi
 
 if [ "$#" -gt 0 ] && [ "$1" == "--help" ]; then
     less usage.info
+    exit
+elif [ "$#" -gt 0 ] && [ "$1" == "--axuda" ]; then
+    less uso.info
     exit
 fi
 
@@ -33,7 +45,7 @@ fi
 
 runValgrind() {
 # Run Valgrind to check for memory leaks and direct output to 'val'
-    valgrind -s --leak-check=full --show-leak-kinds=all ./$1 2>val
+    valgrind -s --leak-check=full --show-leak-kinds=all --track-origins=yes ./$1 2>val
     # Extract function names from the header file and store in 'funcs'
     grep ");" "$a" | awk '{print $2}' | tr '*' ' ' | tr '(' ' ' | awk '{print $1}' > funcs
 }
@@ -43,7 +55,7 @@ writeBlock () {
     echo "" >> myLeaks.log
     echo "" >> myLeaks.log
 }
-
+clean
 runValgrind "$1"
 # Process the Valgrind output
 # Set the control variables at initial values
@@ -66,6 +78,9 @@ while read p; do
             echo "$p" | grep "LEAK SUMMARY:" > blocks.tmp
         fi
         if [ ! -s blocks.tmp ]; then
+            echo "$p" | grep "Use of uninitialised value of size" > blocks.tmp
+        fi
+        if [ ! -s blocks.tmp ]; then
             echo "$p" | grep "ERROR SUMMARY" > blocks.tmp
         fi
         if [ ! -s blocks.tmp ]; then
@@ -73,6 +88,9 @@ while read p; do
         fi
         if [ ! -s blocks.tmp ]; then
             echo "$p" | grep "Invalid free" > blocks.tmp
+        fi
+        if [ ! -s blocks.tmp ]; then
+            echo "$p" | grep "Invalid write of size" > blocks.tmp
         fi
         if [ ! -s blocks.tmp ]; then
             echo "$p" | grep "are still reachable in loss" > blocks.tmp
@@ -129,5 +147,5 @@ if [ ! -f "./myLeaks.log" ]; then
     echo "No leaks nor memory access issues found"
 fi
 
+cleanTemps
 # Clean up temporary files
-rm -f blocks.tmp val.tmp word.tmp
